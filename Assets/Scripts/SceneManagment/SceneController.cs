@@ -2,20 +2,23 @@ using UnityEngine;
 
 public class SceneController : MonoBehaviour
 {
-    [SerializeField] private PlayerController PlayerController;
+    [SerializeField] private PlayerController playerController;
 
     private void Awake()
     {
-        PlayerController.Init();
+        playerController.Init();
     }
-
+    private void OnDisable()
+    {
+        playerController.UnSubscribe();
+    }
     private void Update()
     {
-        PlayerController.DoUpdate();
+        playerController.DoUpdate();
     }
 
     private void FixedUpdate()
     {
-        PlayerController.DoFixedUpdate();
+        playerController.DoFixedUpdate();
     }
 }
