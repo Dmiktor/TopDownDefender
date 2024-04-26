@@ -28,6 +28,7 @@ public class BaseEnemy : MonoBehaviour
 
     private void Awake()
     {
+        enemyHealth.Init();
         IdleState = Instantiate(idleState);
         ChaseState = Instantiate(chaseState);
         AttackState = Instantiate(attackState);

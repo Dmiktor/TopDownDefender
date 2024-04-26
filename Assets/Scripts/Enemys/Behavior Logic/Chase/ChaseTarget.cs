@@ -1,8 +1,6 @@
 using Pathfinding;
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 [CreateAssetMenu(fileName = "Chase-Chase-Target", menuName = "Enemy/States/Chase-States", order = 1)]
 public class ChaseTarget : EnemySOBaseState
@@ -14,7 +12,6 @@ public class ChaseTarget : EnemySOBaseState
     
     private Path path;
     private int currentWaypoint = 0;
-    private bool reachedEndOfPath = false;
     private Coroutine lostTargetCoroutine;
 
     public override void DoFixedUpdate()
@@ -23,15 +20,6 @@ public class ChaseTarget : EnemySOBaseState
         if (path == null)
         {
             return;
-        }
-        if (currentWaypoint >= path.vectorPath.Count)
-        {
-            reachedEndOfPath = true;
-            return;
-        }
-        else
-        {
-            reachedEndOfPath = false;
         }
 
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - enemy.EnemyRigidBody.position).normalized;
@@ -96,7 +84,6 @@ public class ChaseTarget : EnemySOBaseState
     public override void ResetState()
     {
         base.ResetState();
-        reachedEndOfPath = false;
         currentWaypoint = 0;
         lostTargetCoroutine = null;
     }

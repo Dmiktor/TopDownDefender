@@ -1,59 +1,58 @@
-using DG.Tweening;
-using System.Collections;
+using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D playerRigidBody;
     [SerializeField] private float speed;
-    [SerializeField] private float dashSpeed;
-    [SerializeField] private float dashDuration;
-    [SerializeField] private float dashCooldown;
-    [SerializeField] private Image staminaCooldown;
-    [SerializeField] private Ease staminaCooldownEase;
+    [SerializeField] private float sprintingModifier;
 
     private bool isBlocked;
-    private bool canDash = true;
+    private bool isSprinting;
     private Vector2 movementDirection;
+
+    private float Speed
+    {
+        get
+        {
+            if (isSprinting)
+            {
+                return speed * sprintingModifier;
+            }
+            else
+            {
+                return speed;
+            }
+
+        }
+        set { speed = value; }
+    }
+
+    public bool IsBlocked { get => isBlocked; set => isBlocked = value; }
+    public Rigidbody2D PlayerRigidBody => playerRigidBody;
 
     public void Subscribe(PlayerController playerController)
     {
         playerController.PlayerInputValidator.OnMove += SetMovingVector;
+        playerController.PlayerInputValidator.OnSprint += SetSprint;
     }
 
     public void UnSubscribe(PlayerController playerController)
     {
         playerController.PlayerInputValidator.OnMove -= SetMovingVector;
+        playerController.PlayerInputValidator.OnSprint -= SetSprint;
     }
 
-    private void TryDash()
+    internal void DoFixedUpdate()
     {
-        if (canDash)
+        if (!IsBlocked)
         {
-            StartCoroutine(DashCoroutine());
+            Move();
         }
     }
-
-    private IEnumerator DashCoroutine()
+    private void Move()
     {
-        isBlocked = true;
-        canDash = false;
-        StarDashCooldown();
-        playerRigidBody.velocity = movementDirection * dashSpeed;
-        yield return new WaitForSeconds(dashDuration);
-        isBlocked = false;
-    }
-    private void StarDashCooldown()
-    {
-        canDash = false;
-        staminaCooldown.fillAmount = 0f;
-        staminaCooldown.gameObject.SetActive(true);
-        staminaCooldown.DOFillAmount(1, dashCooldown).SetEase(staminaCooldownEase).OnComplete(() =>
-        {
-            staminaCooldown.gameObject.SetActive(false);
-            canDash = true;
-        });
+        PlayerRigidBody.velocity = movementDirection * Speed;
     }
 
     private void SetMovingVector(Vector2 movementDirection)
@@ -61,16 +60,8 @@ public class PlayerMovement : MonoBehaviour
         this.movementDirection = movementDirection;
     }
 
-    internal void DoFixedUpdate()
+    private void SetSprint(bool obj)
     {
-        if (!isBlocked)
-        {
-            Move();
-        }
-    }
-
-    private void Move()
-    {
-        playerRigidBody.velocity = movementDirection * speed;
+        isSprinting = obj;
     }
 }

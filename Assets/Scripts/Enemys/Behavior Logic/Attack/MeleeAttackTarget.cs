@@ -39,6 +39,7 @@ public class MeleeAttackTarget : EnemySOBaseState
     }
     private IEnumerator AttackCoroutine()
     {
+        enemy.EnemyRigidBody.velocity = Vector3.zero;
         yield return new WaitForSeconds(attackPreparation);
         if (!targetOutOfRange )
         {

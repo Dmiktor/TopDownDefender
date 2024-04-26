@@ -9,28 +9,30 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerAbilityController playerAbilityController;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private PlayerHealth playerHealth;
-
-
+    [SerializeField] private PlayerLookTarget playerLookTarget;
     public PlayerInputValidator PlayerInputValidator => playerInputValidator;
+    public PlayerMovement PlayerMovement => playerMovement;
 
     internal void Init()
     {
         playerHealth.Init();
-        playerAbilityController.Subscribe(this);
-        playerMovement.Subscribe(this);
+        playerAbilityController.init(this);
+        PlayerMovement.Subscribe(this);
         PlayerInputValidator.Init(playerCamera);
         playerCameraTargetController.Subscribe(this);
+        playerLookTarget.Subscribe(this);
     }
     internal void UnSubscribe()
     {
         playerCameraTargetController.UnSubscribe(this);
-        playerAbilityController.UnSubscribe(this);
-        playerMovement.UnSubscribe(this);
+        playerAbilityController.UnSubscribe();
+        PlayerMovement.UnSubscribe(this);
+        playerLookTarget.UnSubscribe(this);
     }
 
     internal void DoFixedUpdate()
     {
-        playerMovement.DoFixedUpdate();
+        PlayerMovement.DoFixedUpdate();
     }
 
     internal void DoUpdate()

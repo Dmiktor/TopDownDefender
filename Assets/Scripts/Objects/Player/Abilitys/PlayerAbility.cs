@@ -1,26 +1,42 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerAbility
+public class PlayerAbility:ScriptableObject
 {
-    [SerializeField] private string abilityName;
-    [SerializeField] private Sprite abilityIcon;
-    [SerializeField] private float cooldownTime;
-    [SerializeField] private float duration;
+    [SerializeField] protected string abilityName;
+    [SerializeField] protected Sprite abilityIcon;
+    [SerializeField] protected PlayerController player;
+    [SerializeField] protected float cooldownTime;
+    [SerializeField] protected float duration;
 
+    protected AbilityState currentAbilityState;
 
-    public virtual void StartAbilityCasting(PlayerController playerController)
+    protected Coroutine castingCoroutine;
+    protected Coroutine coolDownCoroutine;
+
+    public virtual void Init(PlayerController playerController)
+    {
+        player = playerController;
+    }
+    public virtual void StartAbilityCasting()
     {
 
     }
 
-    public virtual void CancelAbilityCosting()
+    public virtual void CancelAbilityCasting()
     {
 
     }
     public virtual void ExitAbility()
     {
-
+        if (castingCoroutine != null)
+        {
+            player.StopCoroutine(castingCoroutine);
+        }
+        if (coolDownCoroutine != null)
+        {
+            player.StopCoroutine(coolDownCoroutine);
+        }
     }
 
     public virtual IEnumerator AbilityCastings()

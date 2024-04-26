@@ -11,7 +11,6 @@ public class FollowPath : EnemySOBaseState
 
     private Path path;
     private int currentWaypoint = 0;
-    private bool reachedEndOfPath = false;
 
     public override void Init(BaseEnemy baseEnemy)
     {
@@ -23,15 +22,6 @@ public class FollowPath : EnemySOBaseState
         if (path == null)
         {
             return;
-        }
-        if (currentWaypoint >= path.vectorPath.Count)
-        {
-            reachedEndOfPath = true;
-            return;
-        }
-        else
-        {
-            reachedEndOfPath = false;
         }
 
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - enemy.EnemyRigidBody.position).normalized;
@@ -76,7 +66,6 @@ public class FollowPath : EnemySOBaseState
     public override void ResetState()
     {
         base.ResetState();
-        reachedEndOfPath = false;
         currentWaypoint = 0;
     }
 
